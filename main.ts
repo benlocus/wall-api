@@ -61,8 +61,8 @@ async function getTeam() {
 }
 
 async function aliasToMember(alias: string) {
-  const members = await getTeam();
-  for (const member of members) {
+  const { records } = await getTeam();
+  for (const member of records) {
     if (alias.toLowerCase() === member.fields.Alias.toLowerCase()) {
       return member;
     }
