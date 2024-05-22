@@ -14,8 +14,12 @@ router
     console.log(rawText);
 
     // extract the name and the task
-    const text = extractTask(rawText.trim());
-    console.log(text);
+    const text = extractTask(rawText.trim()) as Array<string>;
+
+    const [_, name, task] = text;
+
+    console.log("Name: ", name);
+    console.log("Task: ", task);
 
     // return a response
     context.response.body = text;
