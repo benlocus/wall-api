@@ -1,24 +1,14 @@
-import { Application, Router } from "https://deno.land/x/oak/mod.ts";
-
-const books = new Map<string, any>();
-books.set("1", {
-  id: "1",
-  title: "The Hound of the Baskervilles",
-  author: "Conan Doyle, Arthur",
-});
+import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 
 const router = new Router();
 router
   .get("/", (context) => {
     context.response.body = "Hello world!";
   })
-  .get("/book", (context) => {
-    context.response.body = Array.from(books.values());
-  })
-  .get("/book/:id", (context) => {
-    if (books.has(context?.params?.id)) {
-      context.response.body = books.get(context.params.id);
-    }
+  .post("/slack/task", async (context) => {
+    const body = await context.request.body.json();
+    console.log(body);
+    context.response.body = body;
   });
 
 const app = new Application();
