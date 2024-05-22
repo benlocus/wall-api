@@ -29,6 +29,7 @@ router.get("/", (context) => {
     response_type: "in_channel",
     text: response,
   };
+  context.response.headers.set("Content-Type", "application/json");
   context.response.body = JSON.stringify(slackResponse);
 });
 
