@@ -1,5 +1,9 @@
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 
+const BASE_ID = Deno.env.get("BASE_ID");
+const TEAM_TABLE_ID = Deno.env.get("TEAM_TABLE_ID");
+const AIRTABLE_TOKEN = Deno.env.get("AIRTABLE_TOKEN");
+
 const router = new Router();
 router
   .get("/", (context) => {
@@ -21,6 +25,8 @@ router
     console.log("Name: ", name);
     console.log("Task: ", task);
 
+    const team = getTeam();
+
     // return a response
     context.response.body = text;
   });
@@ -36,4 +42,18 @@ function extractTask(text: string) {
   const regex = /^(\w+)\s(...*)/gm;
   const valuesArray = regex.exec(text);
   return valuesArray;
+}
+
+async function getTeam() {
+  const response = await fetch(
+    `https://api.airtable.com/v0/${BASE_ID}/${TEAM_TABLE_ID}`,
+    {
+      headers: {
+        "Authorization": `Bearer ${AIRTABLE_TOKEN}`,
+      },
+    },
+  );
+  const team = await response.json();
+  console.log(team);
+  return team;
 }
