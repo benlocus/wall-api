@@ -25,10 +25,12 @@ router
     console.log("Name: ", name);
     console.log("Task: ", task);
 
-    const team = getTeam();
+    const member = await aliasToMember(name);
+    if (member === null) context.response.body = "Invalid team member.";
+    else context.response.body = member.fields.User.name;
 
     // return a response
-    context.response.body = text;
+    // context.response.body = text;
   });
 
 const app = new Application();
@@ -56,4 +58,14 @@ async function getTeam() {
   const team = await response.json();
   console.log(team);
   return team;
+}
+
+async function aliasToMember(alias: string) {
+  const members = await getTeam();
+  for (const member of members) {
+    if (alias.toLowerCase() === member.fields.Alias.toLowerCase()) {
+      return member;
+    }
+  }
+  return null;
 }
