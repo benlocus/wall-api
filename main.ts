@@ -74,7 +74,11 @@ async function postTask(name: string, task: string) {
     "Task": task,
   };
 
+  console.log(taskObject);
+
   const taskJson = JSON.stringify({ "records": [{ "fields": taskObject }] });
+
+  console.log(taskJson);
 
   const response = await fetch(
     `https://api.airtable.com/v0/${BASE_ID}/${TASK_TABLE_ID}`,
