@@ -29,7 +29,7 @@ router.get("/", (context) => {
     response_type: "in_channel",
     text: response,
   };
-  context.response.body = JSON.stringify(response);
+  context.response.body = JSON.stringify(slackResponse);
 });
 
 const app = new Application();
