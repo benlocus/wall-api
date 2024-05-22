@@ -46,7 +46,7 @@ function extractTask(text: string) {
 
 async function getTeam() {
   const response = await fetch(
-    `https://api.airtable.com/v0/${BASE_ID}/${TEAM_TABLE_ID}?fields=Name,User,Alias`,
+    `https://api.airtable.com/v0/${BASE_ID}/${TEAM_TABLE_ID}?fields[]=Name&fields[]&fields[]=User&fields[]=Alias`,
     {
       headers: {
         "Authorization": `Bearer ${AIRTABLE_TOKEN}`,
