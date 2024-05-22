@@ -7,11 +7,11 @@ router
   })
   .post("/slack/task", async (context) => {
     const formData = await context.request.body.formData();
-    const rawText = formData.get("text") as string;
-
-    // logging for testing
     console.log(context.request);
-    console.log(rawText);
+    console.log(formData);
+
+    const rawText = formData.get("text") as string;
+    const channel = formData.get("channel") as string;
 
     // extract the name and the task
     const text = extractTask(rawText.trim()) as Array<string>;
