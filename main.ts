@@ -86,6 +86,7 @@ async function postTask(name: string, task: string) {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${AIRTABLE_TOKEN}`,
+        "Content-Type": "application/json",
       },
       body: taskJson,
     },
