@@ -2,36 +2,31 @@ import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 
 const BASE_ID = Deno.env.get("BASE_ID");
 const TEAM_TABLE_ID = Deno.env.get("TEAM_TABLE_ID");
+const TASK_TABLE_ID = Deno.env.get("TASK_TABLE_ID");
 const AIRTABLE_TOKEN = Deno.env.get("AIRTABLE_TOKEN");
-
 const router = new Router();
-router
-  .get("/", (context) => {
-    context.response.body = "Hello world!";
-  })
-  .post("/slack/task", async (context) => {
-    const formData = await context.request.body.formData();
-    console.log(context.request);
-    console.log(formData);
+router.get("/", (context) => {
+  context.response.body = "Hello world!";
+}).post("/slack/task", async (context) => {
+  const formData = await context.request.body.formData();
+  console.log(context.request);
+  console.log(formData);
+  const rawText = formData.get("text") as string;
+  const channel = formData.get("channel") as string;
 
-    const rawText = formData.get("text") as string;
-    const channel = formData.get("channel") as string;
+  // extract the name and the task
+  const text = extractTask(rawText.trim()) as Array<string>;
 
-    // extract the name and the task
-    const text = extractTask(rawText.trim()) as Array<string>;
+  const [_, name, task] = text;
 
-    const [_, name, task] = text;
+  console.log("Name: ", name);
+  console.log("Task: ", task);
 
-    console.log("Name: ", name);
-    console.log("Task: ", task);
+  const response = await postTask(name, task);
 
-    const member = await aliasToMember(name);
-    if (member === null) context.response.body = "Invalid team member.";
-    else context.response.body = member.fields.User.name;
-
-    // return a response
-    // context.response.body = text;
-  });
+  // return a response
+  context.response.body = response;
+});
 
 const app = new Application();
 app.use(router.routes());
@@ -68,4 +63,29 @@ async function aliasToMember(alias: string) {
     }
   }
   return null;
+}
+
+async function postTask(name: string, task: string) {
+  const user = await aliasToMember(name);
+  const userId = user.fields.User.id;
+
+  const taskObject = {
+    "Executing": userId,
+    "Task": task,
+  };
+
+  const taskJson = JSON.stringify({ "records": [{ "fields": taskObject }] });
+
+  const response = await fetch(
+    `https://api.airtable.com/v0/${BASE_ID}/${TASK_TABLE_ID}`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${AIRTABLE_TOKEN}`,
+      },
+      body: taskJson,
+    },
+  );
+
+  return `New task for *${user.fields.User.name}*: ${task}`;
 }
