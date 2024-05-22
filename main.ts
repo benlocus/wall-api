@@ -87,5 +87,7 @@ async function postTask(name: string, task: string) {
     },
   );
 
+  console.log(response);
+
   return `New task for *${user.fields.User.name}*: ${task}`;
 }
