@@ -25,7 +25,11 @@ router.get("/", (context) => {
   const response = await postTask(name, task);
 
   // return a response
-  context.response.body = response;
+  const slackResponse = {
+    response_type: "in_channel",
+    text: response,
+  };
+  context.response.body = JSON.stringify(response);
 });
 
 const app = new Application();
