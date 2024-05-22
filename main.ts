@@ -71,16 +71,16 @@ async function aliasToMember(alias: string) {
 
 async function postTask(name: string, task: string) {
   const user = await aliasToMember(name);
-  const userName = user.fields.User.name;
+  const userId = user.fields.User.id;
 
   const taskObject = {
-    "Executing": userName,
+    "Executing": userId,
     "Task": task,
   };
 
   console.log(taskObject);
 
-  const taskJson = JSON.stringify({ "fields": taskObject });
+  const taskJson = JSON.stringify({ "fields": taskObject, typecast: true });
 
   console.log(taskJson);
 
