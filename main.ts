@@ -6,8 +6,8 @@ router
     context.response.body = "Hello world!";
   })
   .post("/slack/task", async (context) => {
-    const body = await context.request.body.json();
-    console.log(body);
+    // const body = await context.request.body.json();
+    // console.log(body);
     context.response.body = context.request;
   });
 
