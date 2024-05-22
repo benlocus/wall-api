@@ -74,7 +74,7 @@ async function postTask(name: string, task: string) {
   const userName = user.fields.User.name;
 
   const taskObject = {
-    "Executing": userId,
+    "Executing": userName,
     "Task": task,
   };
 
