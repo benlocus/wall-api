@@ -12,7 +12,7 @@ router.get("/", (context) => {
   console.log(context.request);
   console.log(formData);
   const rawText = formData.get("text") as string;
-  const channel = formData.get("channel") as string;
+  const channel = formData.get("channel_name") as string;
 
   // extract the name and the task
   const text = extractTask(rawText.trim()) as Array<string>;
@@ -22,7 +22,7 @@ router.get("/", (context) => {
   console.log("Name: ", name);
   console.log("Task: ", task);
 
-  const response = await postTask(name, task);
+  const response = await postTask(name, task, channel);
 
   // return a response
   const slackResponse = {
@@ -70,13 +70,14 @@ async function aliasToMember(alias: string) {
   return null;
 }
 
-async function postTask(name: string, task: string) {
+async function postTask(name: string, task: string, channel: string) {
   const user = await aliasToMember(name);
   const userId = user.fields.User.id;
 
   const taskObject = {
     "Executing": userId,
     "Task": task,
+    "Notes": `Via Slack from channel: ${channel}`,
   };
 
   console.log(taskObject);
