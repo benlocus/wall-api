@@ -7,9 +7,17 @@ router
   })
   .post("/slack/task", async (context) => {
     const formData = await context.request.body.formData();
-    const text = formData.get("text");
+    const rawText = formData.get("text") as string;
+
+    // logging for testing
     console.log(context.request);
+    console.log(rawText);
+
+    // extract the name and the task
+    const text = extractTask(rawText.trim());
     console.log(text);
+
+    // return a response
     context.response.body = text;
   });
 
@@ -18,3 +26,10 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 await app.listen({ port: 8000 });
+
+// utility
+function extractTask(text: string) {
+  const regex = /^(\w+)\s(...*)/gm;
+  const valuesArray = regex.exec(text);
+  return valuesArray;
+}
